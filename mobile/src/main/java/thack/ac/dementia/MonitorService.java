@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class MonitorService extends Service implements LocationListener {
     private static final String TAG              = MonitorService.class.getName();
-    private static final int    INTERVAL_SECONDS = 10*60*60;
+    private static final int    INTERVAL_SECONDS = 15*60;
     private sendLocationAsync      mTask;
     private String              mPulseUrl;
     private AlarmManager        alarms;
@@ -90,7 +90,7 @@ public class MonitorService extends Service implements LocationListener {
 
         JSONObject locationJson = new JSONObject();
         try {
-            locationJson.put("latitute", lat);
+            locationJson.put("latitude", lat);
             locationJson.put("longitude", lng);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -12,8 +12,12 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -43,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -82,7 +87,8 @@ public class MainActivity extends ActionBarActivity implements
 
     //Record the list of bluetooth devices within the range
     ArrayList<String> devicesInRange = new ArrayList<>();
-    private String CARE_GIVER_ID = "Moazzam";
+    //private String CARE_GIVER_ID = "Moazzam";
+    private String CARE_GIVER_ID = "Zhu";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,11 +195,14 @@ public class MainActivity extends ActionBarActivity implements
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
                 String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
 
-                //Match the ID of the caregiver
-                if (isCareGiver(name) && !checkIfDeviceAlreadyFound(name)){
-                rssi_msg.setText(rssi_msg.getText() + "\n" + name + " => " + rssi + "dBm");
-                //Trigger notice if the device is not already found
-                triggerDataChange(name);
+                if (name != null && !checkIfDeviceAlreadyFound(name)){
+                    rssi_msg.setText(rssi_msg.getText() + "\n" + name + " => " + rssi + "dBm");
+                    //Match the ID of the caregiver
+                    if (isCareGiver(name)){
+                        //Trigger notice if the device is not already found
+                        triggerDataChange(name);
+                }
+
                 }
             }
             else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))
@@ -205,9 +214,6 @@ public class MainActivity extends ActionBarActivity implements
     };
 
     private boolean isCareGiver(String name) {
-        if (name == null){
-            return false;
-        }
         return name.contains(CARE_GIVER_ID);
     }
 
@@ -276,6 +282,14 @@ public class MainActivity extends ActionBarActivity implements
     // Create a data map and put data in it
     private void triggerDataChange(String name) {
         Log.v("myTag", "Trigger Data Change");
+
+        String message = "triggerDataChange";
+        //Requires a new thread to avoid blocking the UI
+        new SendToDataLayerThread("/message_path", message).start();
+
+        //Trigger music playing
+        triggerMusicPlaying();
+
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
         Bitmap icon = BitmapFactory.decodeResource(
                 getResources(), R.mipmap.ic_photo);
@@ -284,10 +298,34 @@ public class MainActivity extends ActionBarActivity implements
         putDataMapReq.getDataMap().putString(KEY_TITLE,
                 String.format("Caregiver %s is here!", getCaregiverName(name)));
         putDataMapReq.getDataMap().putInt(COUNT_KEY, count);
+        putDataMapReq.getDataMap().putLong("time", new Date().getTime());
         putDataMapReq.getDataMap().putAsset(KEY_IMAGE, asset);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+    }
+
+    private void triggerMusicPlaying() {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), notification);
+        mp.start();
+
+        CountDownTimer timer = new CountDownTimer(7000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Nothing to do
+            }
+
+            @Override
+            public void onFinish() {
+                if (mp.isPlaying()) {
+                    mp.stop();
+                    mp.release();
+                }
+            }
+        };
+        timer.start();
     }
 
     @Override
@@ -295,21 +333,21 @@ public class MainActivity extends ActionBarActivity implements
         double lat = (location.getLatitude());
         double lng = (location.getLongitude());
 
-        JSONObject locationJson = new JSONObject();
-        try {
-            locationJson.put("latitute", lat);
-            locationJson.put("longitude", lng);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String locationJSONString = locationJson.toString();
+        //JSONObject locationJson = new JSONObject();
+        //try {
+        //    locationJson.put("latitute", lat);
+        //    locationJson.put("longitude", lng);
+        //} catch (JSONException e) {
+        //    e.printStackTrace();
+        //}
+        //String locationJSONString = locationJson.toString();
 
         //Send to server
         //Add nameValuePair for http request
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        addToNameValuePairs(nameValuePairs, "deviceId", deviceId);
-        addToNameValuePairs(nameValuePairs, "location", locationJSONString);
-        new sendLocationAsync().execute(nameValuePairs);
+        //List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        //addToNameValuePairs(nameValuePairs, "deviceId", deviceId);
+        //addToNameValuePairs(nameValuePairs, "location", locationJSONString);
+        //new sendLocationAsync().execute(nameValuePairs);
 
         latituteField.setText(String.valueOf(lat));
         longitudeField.setText(String.valueOf(lng));

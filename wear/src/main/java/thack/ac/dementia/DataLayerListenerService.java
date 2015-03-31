@@ -47,11 +47,6 @@ public class DataLayerListenerService extends WearableListenerService {
             Log.d(TAG, "Message path received on watch is: " + messageEvent.getPath());
             Log.d(TAG, "Message received on watch is: " + message);
 
-            // Broadcast message to wearable activity for display
-            //Intent messageIntent = new Intent();
-            //messageIntent.setAction(Intent.ACTION_SEND);
-            //messageIntent.putExtra("message", message);
-            //LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
         } else {
             super.onMessageReceived(messageEvent);
         }
@@ -64,18 +59,6 @@ public class DataLayerListenerService extends WearableListenerService {
         final List events = FreezableUtils
                 .freezeIterable(dataEvents);
 
-        //GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
-        //        .addApi(Wearable.API)
-        //        .build();
-        //
-        //ConnectionResult connectionResult =
-        //        googleApiClient.blockingConnect(30, TimeUnit.SECONDS);
-        //
-        //if (!connectionResult.isSuccess()) {
-        //    Log.e(TAG, "Failed to connect to GoogleApiClient.");
-        //    return;
-        //}
-
         // Loop through the events and send a message
         // to the node that created the data item.
         for (DataEvent event : (List<DataEvent>) events) {
@@ -83,19 +66,6 @@ public class DataLayerListenerService extends WearableListenerService {
             String title = dataMapItem.getDataMap().getString(KEY_TITLE);
             int count = dataMapItem.getDataMap().getInt(COUNT_KEY);
             Asset asset = dataMapItem.getDataMap().getAsset(KEY_IMAGE);
-
-            // Build the intent to display our custom notification
-            //Intent notificationIntent =
-            //        new Intent(this, MainActivity.class);
-            //notificationIntent.putExtra(
-            //        MainActivity.EXTRA_TITLE, title);
-            //notificationIntent.putExtra(
-            //        MainActivity.EXTRA_IMAGE, asset);
-            //PendingIntent notificationPendingIntent = PendingIntent.getActivity(
-            //        this,
-            //        0,
-            //        notificationIntent,
-            //        PendingIntent.FLAG_UPDATE_CURRENT);
 
             Bitmap icon = loadBitmapFromAsset(asset);
 
@@ -118,14 +88,6 @@ public class DataLayerListenerService extends WearableListenerService {
             notificationManager.notify(
                     NOTIFICATION_ID, notificationBuilder.build());
             Log.d(TAG, "Displayed notification");
-            // Broadcast message to wearable activity for display
-            //Intent messageIntent = new Intent();
-            //messageIntent.setAction(Intent.ACTION_SEND);
-            //messageIntent.putExtra("message", "count: " + count);
-            //LocalBroadcastManager.getInstance(this).sendBroadcast(messageIntent);
-            // Send the RPC
-            //Wearable.MessageApi.sendMessage(googleApiClient, nodeId,
-            //        DATA_ITEM_RECEIVED_PATH, payload);
         }
     }
 
