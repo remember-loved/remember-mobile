@@ -29,12 +29,13 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:text="Bluetooth Devices"
+        android:text="Bluetooth Devices:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/result"
         android:layout_below="@id/button2"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"/>
 
 
     <TextView
@@ -62,12 +63,13 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:text="device ID\n"
+        android:text="device ID:\n"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/device_id"
         android:layout_below="@+id/longitude"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"/>
 
 
 </RelativeLayout>

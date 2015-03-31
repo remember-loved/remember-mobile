@@ -42,8 +42,6 @@ import com.google.android.gms.wearable.Wearable;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -76,7 +74,7 @@ public class MainActivity extends ActionBarActivity implements
     private TextView longitudeField;
     private TextView deviceIDField;
     TextView rssi_msg;
-    private String careGiverName = "Zhu Liang";
+
 
     private LocationManager locationManager;
     private String          provider;
@@ -87,13 +85,19 @@ public class MainActivity extends ActionBarActivity implements
 
     //Record the list of bluetooth devices within the range
     ArrayList<String> devicesInRange = new ArrayList<>();
-    //private String CARE_GIVER_ID = "Moazzam";
-    private String CARE_GIVER_ID = "Zhu";
+    private String CARE_GIVER_ID_M = "Moazzam";
+    private String CARE_GIVER_ID_Z = "Zhu";
+    private String[] CARE_GIVER_IDS;
+    private String careGiverName_M = "Moazzam";
+    private String careGiverName_Z = "Zhu Liang";
+    private String careGiverName_default = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initializeCareGivers();
 
         registerReceiver(receiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         registerReceiver(receiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
@@ -157,6 +161,12 @@ public class MainActivity extends ActionBarActivity implements
 
     }
 
+    private void initializeCareGivers() {
+        CARE_GIVER_IDS = new String[2];
+        CARE_GIVER_IDS[0] = CARE_GIVER_ID_Z;
+        CARE_GIVER_IDS[1] = CARE_GIVER_ID_M;
+    }
+
     private void discoveryDevices() {
         BTAdapter.startDiscovery();
         signal.setText("Starting to discover");
@@ -193,14 +203,14 @@ public class MainActivity extends ActionBarActivity implements
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
-                String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                String blueToothId = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
 
-                if (name != null && !checkIfDeviceAlreadyFound(name)){
-                    rssi_msg.setText(rssi_msg.getText() + "\n" + name + " => " + rssi + "dBm");
+                if (blueToothId != null && !checkIfDeviceAlreadyFound(blueToothId)){
+                    rssi_msg.setText(rssi_msg.getText() + "\n" + blueToothId + " => " + rssi + "dBm");
                     //Match the ID of the caregiver
-                    if (isCareGiver(name)){
+                    if (isCareGiver(blueToothId)){
                         //Trigger notice if the device is not already found
-                        triggerDataChange(name);
+                        triggerDataChange(blueToothId);
                 }
 
                 }
@@ -214,7 +224,12 @@ public class MainActivity extends ActionBarActivity implements
     };
 
     private boolean isCareGiver(String name) {
-        return name.contains(CARE_GIVER_ID);
+        for (String careGiverId: CARE_GIVER_IDS){
+            if (name.contains(careGiverId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean checkIfDeviceAlreadyFound(String name) {
@@ -251,8 +266,14 @@ public class MainActivity extends ActionBarActivity implements
         signal.setText("Connection failed");
     }
 
-    public String getCaregiverName(String name) {
-        return careGiverName;
+    public String getCaregiverNameFromId(String id) {
+        if (id.contains(CARE_GIVER_ID_M)){
+            return careGiverName_M;
+        }else if (id.contains(CARE_GIVER_ID_Z)){
+            return careGiverName_Z;
+        }else {
+            return careGiverName_default;
+        }
     }
 
     class SendToDataLayerThread extends Thread {
@@ -280,7 +301,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     // Create a data map and put data in it
-    private void triggerDataChange(String name) {
+    private void triggerDataChange(String id) {
         Log.v("myTag", "Trigger Data Change");
 
         String message = "triggerDataChange";
@@ -296,7 +317,7 @@ public class MainActivity extends ActionBarActivity implements
         Asset asset = createAssetFromBitmap(icon);
         count++;
         putDataMapReq.getDataMap().putString(KEY_TITLE,
-                String.format("Caregiver %s is here!", getCaregiverName(name)));
+                String.format("Caregiver %s is here!", getCaregiverNameFromId(id)));
         putDataMapReq.getDataMap().putInt(COUNT_KEY, count);
         putDataMapReq.getDataMap().putLong("time", new Date().getTime());
         putDataMapReq.getDataMap().putAsset(KEY_IMAGE, asset);
