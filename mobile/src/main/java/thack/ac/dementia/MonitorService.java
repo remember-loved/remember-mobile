@@ -32,7 +32,8 @@ import java.util.List;
  */
 public class MonitorService extends Service implements LocationListener {
     private static final String TAG              = MonitorService.class.getName();
-    private static final int    INTERVAL_SECONDS = 15*60;
+    private static final int    INTERVAL_SECONDS = 60*60;
+    //private static final int    INTERVAL_SECONDS = 15;
     private sendLocationAsync      mTask;
     private String              mPulseUrl;
     private AlarmManager        alarms;
