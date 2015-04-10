@@ -1,0 +1,135 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                tools:context="thack.ac.dementia.RegisterActivity">
+    <!--  Header  Starts-->
+    <LinearLayout android:id="@+id/header"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@layout/header_gradient"
+                  android:paddingTop="5dip"
+                  android:paddingBottom="5dip">
+        <!-- Logo Start-->
+        <ImageView android:src="@mipmap/ic_launcher"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="10dip"/>
+        <!-- Logo Ends -->
+    </LinearLayout>
+    <!--  Header Ends -->
+    <!-- Registration Form -->
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:layout_below="@id/header">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Name Label -->
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:textColor="#372c24"
+                          android:text="Name"
+                          android:gravity="center_vertical|center_horizontal"
+                          android:layout_alignParentBottom="false"/>
+                <EditText android:id="@+id/reg_name"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:singleLine="true"
+                          android:layout_centerVertical="true"
+                          android:layout_alignParentStart="true"/>
+            </RelativeLayout>
+
+            <!-- Image Label -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:textColor="#372c24"
+                          android:text="Photo"
+                          android:gravity="center_horizontal"/>
+                <ImageButton
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/imageButton"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@mipmap/photo_placeholder"
+                    android:longClickable="false"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Bluetooth ID Label -->
+        <TextView android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="#372c24"
+                  android:text="Bluetooth ID"/>
+
+
+        <EditText android:id="@+id/reg_bluetooth"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="5dip"
+                  android:singleLine="true"
+                  android:layout_marginBottom="20dip"/>
+
+        <TextView android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="#372c24"
+                  android:text="Choose from nearby Bluetooth IDs:"
+                  android:visibility="gone"/>
+
+        <TextView android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/empty_notice"
+                  android:textColor="#372c24"
+                  android:text="No nearby Bluetooth devices detected"
+                  android:visibility="gone"/>
+
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radiogrp"
+            android:orientation="vertical">
+
+        </RadioGroup>
+        <!-- Register Button -->
+        <Button android:id="@+id/btnRegister"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="Register New Caregiver"
+                android:textSize="20dip"
+                android:textColor="#025f7c"/>
+        <!-- Back to MainActivity -->
+        <Button android:id="@+id/back"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:text="Cancel"
+                  android:gravity="center"
+                  android:textSize="20dip"
+                  android:textColor="#025f7c"
+                  android:layout_alignParentBottom="true"
+                  android:layout_alignParentStart="true"/>
+
+    </LinearLayout>
+    <!-- Registration Form Ends -->
+
+</RelativeLayout>

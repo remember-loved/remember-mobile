@@ -39,18 +39,18 @@ public class DataLayerListenerService extends WearableListenerService {
     private static final String KEY_TITLE       = "thack.ac.key.title";
     private static final int    NOTIFICATION_ID = 1;
 
-    @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-
-        if (messageEvent.getPath().equals("/message_path")) {
-            final String message = new String(messageEvent.getData());
-            Log.d(TAG, "Message path received on watch is: " + messageEvent.getPath());
-            Log.d(TAG, "Message received on watch is: " + message);
-
-        } else {
-            super.onMessageReceived(messageEvent);
-        }
-    }
+    //@Override
+    //public void onMessageReceived(MessageEvent messageEvent) {
+    //
+    //    if (messageEvent.getPath().equals("/message_path")) {
+    //        final String message = new String(messageEvent.getData());
+    //        Log.d(TAG, "Message path received on watch is: " + messageEvent.getPath());
+    //        Log.d(TAG, "Message received on watch is: " + message);
+    //
+    //    } else {
+    //        super.onMessageReceived(messageEvent);
+    //    }
+    //}
 
 
     @Override

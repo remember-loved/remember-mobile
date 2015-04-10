@@ -44,7 +44,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public byte[] drawableConverter(String imageName) {
-        int resID = res.getIdentifier(imageName, "drawable", context.getPackageName());
+        int resID = res.getIdentifier(imageName, "mipmap", context.getPackageName());
         Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), resID);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -85,7 +85,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("_id", 1);
         cv.put("Name", "Zhu Liang");
-        cv.put("Image", drawableConverter("coloured_flames"));
+        cv.put("Image", drawableConverter("ic_photo"));
         cv.put("created_at", getOldDateTime(1));
         cv.put("BluetoothID", "Zhu");
         db.insert("mytable", "Name", cv);
@@ -104,18 +104,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.delete("mytable", "_id" + "=" + id, null);
     }
 
-    private void insertDataIntoDatabase(SQLiteDatabase db,String id, String name, String bluetoothID, Bitmap bitmap) {
+    public static boolean insertDataIntoDatabase(SQLiteDatabase db, String name, String bluetoothID, Bitmap bitmap) {
         //Insert data into database
         ContentValues cv = new ContentValues();
-        cv.put("_id", id);
         cv.put("Name", name);
         cv.put("Image", Utils.bitmapConverter(bitmap));
         cv.put("BluetoothID", bluetoothID);
         try {
             db.insertWithOnConflict("mytable", "Name", cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return true;
         } catch (SQLiteException exception) {
             Log.e(TAG, "Insertion error.");
             exception.printStackTrace();
+            return false;
         }
     }
 

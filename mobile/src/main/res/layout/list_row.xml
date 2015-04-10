@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:id="@+id/background_wrapper"
+    android:baselineAligned="false">
+
+    <!--  ListRow Left side Thumbnail image -->
+    <LinearLayout android:id="@+id/thumbnail"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:contentDescription="@string/image_description"
+            android:id="@+id/list_image"
+            android:layout_width="@dimen/list_row_height"
+            android:layout_height="@dimen/list_row_height"
+            android:src="@mipmap/ic_photo"/>
+
+    </LinearLayout>
+    <LinearLayout android:id="@+id/textarea"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/list_row_height"
+        android:layout_weight="100">
+    <!-- Title Of Caregiver-->
+        <LinearLayout android:id="@+id/main_text"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/list_row_height"
+            android:layout_marginBottom="0dp"
+            android:weightSum="4">
+            <TextView
+                android:id="@+id/id"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textColor="#343434"
+                android:textSize="12sp"
+                android:text="1"
+                android:visibility="invisible"
+                android:gravity="center_vertical"/>
+            <TextView
+                android:layout_gravity="center"
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="Name"
+                android:textColor="#040404"
+                android:typeface="sans"
+                android:textSize="28dp"
+                android:textStyle="bold"
+                android:lines="2"
+                android:maxLines="2"
+                android:gravity="center_vertical|center_horizontal"/>
+
+
+        </LinearLayout>
+        <!-- Extra Info -->
+        <LinearLayout android:id="@+id/extra_text"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-15dp">
+
+            <TextView
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/extra"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#343434"
+                android:textSize="12sp"
+                android:text="Extra"
+                android:visibility="visible"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

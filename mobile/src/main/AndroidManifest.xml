@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="thack.ac.dementia" >
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,8 +13,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <service android:enabled="true" android:name=".MonitorService" />
+        android:theme="@style/AppTheme" >
+        <service
+            android:name=".MonitorService"
+            android:enabled="true" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -23,8 +27,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver
-            android:name="LaunchReceiver"
+            android:name=".LaunchReceiver"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -33,6 +38,11 @@
                 <action android:name="thack.ac.ACTION_PULSE_SERVER_ALARM" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".RegisterActivity"
+            android:label="@string/title_activity_register" >
+        </activity>
     </application>
 
 </manifest>
