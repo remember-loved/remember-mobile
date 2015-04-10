@@ -38,7 +38,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     Context   context;
 
     public DataBaseHelper(Context context) {
-        super(context, "Caregivers.db", null, 1);
+        super(context, "Caregivers.db", null, 3);
         res = context.getResources();
         this.context = context;
     }

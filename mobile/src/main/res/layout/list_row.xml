@@ -18,7 +18,8 @@
             android:id="@+id/list_image"
             android:layout_width="@dimen/list_row_height"
             android:layout_height="@dimen/list_row_height"
-            android:src="@mipmap/ic_photo"/>
+            android:src="@mipmap/ic_photo"
+            />
 
     </LinearLayout>
     <LinearLayout android:id="@+id/textarea"

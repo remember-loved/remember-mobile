@@ -109,7 +109,7 @@ public class MainActivity extends ActionBarActivity implements
 
     //Record of caregivers in memory
     ArrayList<HashMap<String, String>> caregiverList      = new ArrayList<HashMap<String, String>>();
-    ArrayList<byte[]>                  caregiverImageList = new ArrayList<byte[]>();
+    HashMap<String, byte[]>            caregiverImageList = new HashMap<>();
 
     private ArrayList<String> CARE_GIVER_IDS;
 
@@ -186,7 +186,7 @@ public class MainActivity extends ActionBarActivity implements
         //CARE_GIVER_IDS.add(CARE_GIVER_ID_Z);
         //CARE_GIVER_IDS.add(CARE_GIVER_ID_M);
         caregiverList = new ArrayList<>();
-        caregiverImageList = new ArrayList<>();
+        caregiverImageList = new HashMap<>();
 
         db = (new DataBaseHelper(getApplicationContext())).getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT _id,Name,Image,created_at,BluetoothID FROM mytable ORDER BY _id", null);
@@ -207,10 +207,9 @@ public class MainActivity extends ActionBarActivity implements
             map.put(KEY_BLUETOOTH, bluetoothID);
             map.put(KEY_DATE, date);
             CARE_GIVER_IDS.add(bluetoothID);
-
             // adding HashList to ArrayList
             caregiverList.add(map);
-            caregiverImageList.add(cursor.getBlob(cursor.getColumnIndex("Image")));
+            caregiverImageList.put(id, cursor.getBlob(cursor.getColumnIndex("Image")));
             cursor.moveToNext();
         }
         db.close();
@@ -471,9 +470,9 @@ public class MainActivity extends ActionBarActivity implements
         for (HashMap<String, String> caregiver : caregiverList) {
             String shortID = caregiver.get(KEY_BLUETOOTH);
             if (bluetooth_id.contains(shortID)) {
-                int id = Integer.parseInt(caregiver.get(KEY_ID));
+                //int id = Integer.parseInt(caregiver.get(KEY_ID));
                 name = caregiver.get(KEY_NAME);
-                byte[] image_byteArray = caregiverImageList.get(id);
+                byte[] image_byteArray = caregiverImageList.get(caregiver.get(KEY_ID));
                 image = BitmapFactory.decodeByteArray(image_byteArray, 0, image_byteArray.length);
             }
         }

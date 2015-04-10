@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 public class LazyAdapter extends BaseAdapter {
 
     private ArrayList<HashMap<String, String>> data;
-    private ArrayList<byte[]>                  byteArrayList;
+    private HashMap<String, byte[]>            imageMap;
     byte[] byteArray;
     private static LayoutInflater inflater = null;
     View vi;
@@ -30,10 +29,10 @@ public class LazyAdapter extends BaseAdapter {
     //public ImageLoader imageLoader;
     //TypedArray pictures;
 
-    public LazyAdapter(Activity a, ArrayList<HashMap<String, String>> d, ArrayList<byte[]> byteArrayList) {
+    public LazyAdapter(Activity a, ArrayList<HashMap<String, String>> d, HashMap<String, byte[]> imageMap) {
         Activity activity = a;
         data = d;
-        this.byteArrayList = byteArrayList;
+        this.imageMap = imageMap;
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //imageLoader=new ImageLoader(activity.getApplicationContext());
         //pictures = pic;
@@ -63,7 +62,7 @@ public class LazyAdapter extends BaseAdapter {
         mlayout = vi.findViewById(R.id.background_wrapper);
         HashMap<String, String> item;
         item = data.get(position);
-        byteArray = byteArrayList.get(position);
+        byteArray = imageMap.get(item.get(MainActivity.KEY_ID));
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         // Setting all values in listview

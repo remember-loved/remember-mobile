@@ -1,8 +1,18 @@
 package thack.ac.dementia;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,11 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -26,6 +40,11 @@ public class RegisterActivity extends ActionBarActivity {
 
     ArrayList<String> deviceNames = new ArrayList<>();
 
+    //Photo related
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
+    private ImageButton imgButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,14 +52,22 @@ public class RegisterActivity extends ActionBarActivity {
 
         Button registerButton = (Button) findViewById(R.id.btnRegister);
         Button backButton = (Button) findViewById(R.id.back);
-
+        imgButton = (ImageButton) findViewById(R.id.imageButton);
         final TextView emptyText = (TextView) findViewById(R.id.empty_notice);
         final EditText nameView = (EditText) findViewById(R.id.reg_name);
         final EditText idView = (EditText) findViewById(R.id.reg_bluetooth);
         idView.setHint("Type or choose a nearby device");
 
-        final Bitmap defaultBitmap = BitmapFactory.decodeResource(
-                getResources(), R.mipmap.ic_photo);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), SELECT_PICTURE);
+            }
+        });
 
         deviceNames = getIntent().getStringArrayListExtra(MainActivity.EXTRA_IDS);
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radiogrp);
@@ -71,9 +98,15 @@ public class RegisterActivity extends ActionBarActivity {
                 String name = nameView.getText().toString();
                 String id = idView.getText().toString();
                 if (!name.isEmpty() && !id.isEmpty()){
+                    ProgressDialog progressDialog = ProgressDialog.show(self, "Please wait", "Registering new caregiver...");
+                    progressDialog.setMessage("Registering new caregiver...");
+                    progressDialog.show();
                     db = (new DataBaseHelper(getApplicationContext())).getWritableDatabase();
+                    Bitmap defaultBitmap = ((BitmapDrawable)imgButton.getDrawable()).getBitmap();
+
                     boolean success = DataBaseHelper.insertDataIntoDatabase(db, name, id, defaultBitmap);
                     db.close();
+                    progressDialog.dismiss();
                     if (success){
                         Toast.makeText(self, "New caregiver " + name +" registered!", Toast.LENGTH_SHORT).show();
                         finish();
@@ -97,6 +130,59 @@ public class RegisterActivity extends ActionBarActivity {
         });
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                if (Build.VERSION.SDK_INT < 19) {
+                    selectedImagePath = getPath(selectedImageUri);
+                    Bitmap b = BitmapFactory.decodeFile(selectedImagePath);
+                    Matrix m = new Matrix();
+                    m.setRectToRect(new RectF(0, 0, b.getWidth(), b.getHeight()), new RectF(0, 0, 500, 500), Matrix.ScaleToFit.CENTER);
+                    b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
+                    imgButton.setImageBitmap(b);
+
+                }
+                else {
+                    ParcelFileDescriptor parcelFileDescriptor;
+                    try {
+                        parcelFileDescriptor = getContentResolver().openFileDescriptor(selectedImageUri, "r");
+                        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                        Bitmap b = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                        Matrix m = new Matrix();
+                        m.setRectToRect(new RectF(0, 0, b.getWidth(), b.getHeight()), new RectF(0, 0, 500, 500), Matrix.ScaleToFit.CENTER);
+                        b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
+                        parcelFileDescriptor.close();
+                        imgButton.setImageBitmap(b);
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * helper to retrieve the path of an image URI
+     */
+    public String getPath(Uri uri) {
+        if( uri == null ) {
+            return null;
+        }
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        return uri.getPath();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
