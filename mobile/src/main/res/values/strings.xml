@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Dementia</string>
+    <string name="app_name">Goldies</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_register">Register</string>
 
     <string name="image_description">Image</string>
 </resources>
