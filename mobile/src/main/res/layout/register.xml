@@ -69,7 +69,7 @@
                           android:textColor="#372c24"
                           android:text="Photo"
                           android:visibility="gone"/>
-                <ImageButton
+                <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:id="@+id/imageButton"
@@ -78,7 +78,6 @@
                     android:src="@mipmap/photo_place_holder"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
                     android:padding="5dp"/>
             </LinearLayout>
         </LinearLayout>

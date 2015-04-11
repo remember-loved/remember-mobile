@@ -20,7 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -42,8 +42,8 @@ public class RegisterActivity extends ActionBarActivity {
 
     //Photo related
     private static final int SELECT_PICTURE = 1;
-    private String selectedImagePath;
-    private ImageButton imgButton;
+    private String    selectedImagePath;
+    private ImageView imageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,13 +52,13 @@ public class RegisterActivity extends ActionBarActivity {
 
         Button registerButton = (Button) findViewById(R.id.btnRegister);
         Button backButton = (Button) findViewById(R.id.back);
-        imgButton = (ImageButton) findViewById(R.id.imageButton);
+        imageView = (ImageView) findViewById(R.id.imageButton);
         final TextView emptyText = (TextView) findViewById(R.id.empty_notice);
         final EditText nameView = (EditText) findViewById(R.id.reg_name);
         final EditText idView = (EditText) findViewById(R.id.reg_bluetooth);
         idView.setHint("Type or choose a nearby device");
 
-        imgButton.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -102,7 +102,7 @@ public class RegisterActivity extends ActionBarActivity {
                     progressDialog.setMessage("Registering new caregiver...");
                     progressDialog.show();
                     db = (new DataBaseHelper(getApplicationContext())).getWritableDatabase();
-                    Bitmap defaultBitmap = ((BitmapDrawable)imgButton.getDrawable()).getBitmap();
+                    Bitmap defaultBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
                     boolean success = DataBaseHelper.insertDataIntoDatabase(db, name, id, defaultBitmap);
                     db.close();
@@ -140,7 +140,7 @@ public class RegisterActivity extends ActionBarActivity {
                     Matrix m = new Matrix();
                     m.setRectToRect(new RectF(0, 0, b.getWidth(), b.getHeight()), new RectF(0, 0, 500, 500), Matrix.ScaleToFit.CENTER);
                     b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
-                    imgButton.setImageBitmap(b);
+                    imageView.setImageBitmap(b);
 
                 }
                 else {
@@ -153,7 +153,7 @@ public class RegisterActivity extends ActionBarActivity {
                         m.setRectToRect(new RectF(0, 0, b.getWidth(), b.getHeight()), new RectF(0, 0, 500, 500), Matrix.ScaleToFit.CENTER);
                         b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
                         parcelFileDescriptor.close();
-                        imgButton.setImageBitmap(b);
+                        imageView.setImageBitmap(b);
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
